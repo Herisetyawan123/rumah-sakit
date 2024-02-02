@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.sidebar .nav.sub-menu .nav-item .nav-link.active {
+    color: #4B49AC!important;
+    background: #D8E3FF!important;
+    width: 90%!important;
+}
+
+.btn,
+.badge {
+    display: inline-flex!important;
+}
+
+.nav-item.active .nav-link .icon-grid {
+    color: #ffffff!important;
+}
+
+.form-control-issue {
+    /* display: flex; */
+    flex-direction: row!important;
+}
+
+.sub-menu li .nav-item .nav-link:hover {
+    background-color: #6867c2!important;
+}
+
+.sidebar .nav.sub-menu .nav-item .nav-link:hover {
+    background-color: #6867c2!important;
+}
+
+.sidebar .nav.sub-menu .nav-item .nav-link {
+    width: 90%!important;
+}
+
+.select2-container--default .select2-selection--single {
+    /* background-color: #fff; */
+    /* border: 1px solid #aaa; */
+    /* border-radius: 4px; */
+    color: #c9c8c8;
+}
+
+.select2-container .select2-selection--single {
+    /* box-sizing: border-box; */
+    /* cursor: pointer; */
+    /* display: block; */
+    height: 100%!important;
+    /* user-select: none; */
+    /* -webkit-user-select: none; */
+}
+
+.asColorPicker-input,
+.dataTables_wrapper select,
+.jsgrid .jsgrid-table .jsgrid-filter-row input[type=text],
+.jsgrid .jsgrid-table .jsgrid-filter-row select,
+.jsgrid .jsgrid-table .jsgrid-filter-row input[type=number],
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-search__field,
+.typeahead,
+.tt-query,
+.tt-hint {
+    display: block;
+    width: max-content;
+    /* height: 2.875rem; */
+    padding: 0!important;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+    padding-left: 4px!important;
+    padding-right: 12px!important;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #c9c8c8!important;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #CED4DA!important;
+    border-radius: 2px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #c9c8c8!important;
+    line-height: 2.5rem!important;
+}
