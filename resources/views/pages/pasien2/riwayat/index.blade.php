@@ -131,7 +131,7 @@
                                      }
                                 }
                             }">
-                <form action="/pasien/tebus/obat-edit" method="post" class="modal-box">
+                <form action="/pasien/tebus/obat-edit" enctype="multipart/form-data" method="post" class="modal-box">
                     @csrf
                     {{-- <label for="my-modal-2" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label> --}}
                     
@@ -187,11 +187,15 @@
                                 jenis pengambilan
                             </div>
                             <div>
-                                
-                                <select name="jenis_pengambilan">
-                                    <option value="diambil" {{ $item->jenis_pengambilan == 'diambil' ? 'selected' : '' }}>diambil</option>
-                                    <option value="diantar" {{ $item->jenis_pengambilan == 'diantar' ? 'selected' : '' }}>Diantar</option>
-                                </select>
+                                @if($item->status_pembayaran == 'lunas')
+                                    {{ $item->jenis_pengambilan }}
+                                @else
+
+                                    <select name="jenis_pengambilan">
+                                        <option value="diambil" {{ $item->jenis_pengambilan == 'diambil' ? 'selected' : '' }}>diambil</option>
+                                        <option value="diantar" {{ $item->jenis_pengambilan == 'diantar' ? 'selected' : '' }}>Diantar</option>
+                                    </select>
+                                @endif
                             </div>
                         </div>
 
@@ -200,19 +204,43 @@
                                 Metode Pembayaran
                             </div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->metode_pembayaran }}
+                            @else
                                 <select name="metode_pembayaran">
                                     <option value="cod" {{ $item->metode_pembayaran == 'cod' ? 'selected' : '' }}>cod</option>
                                     <option value="transfer" {{ $item->metode_pembayaran == 'transfer' ? 'selected' : '' }}>transfer</option>
                                 </select>
+                            @endif
                             </div>
                         </div>
+                        
+                        @if($item->metode_pembayaran == 'transfer')
+                            <div class="flex justify-between mt-2">
+                                <div>
+                                    Jenis Bank
+                                </div>
+                                <div>
+                                    <ul>
+                                    @foreach($bank as $b)
+                                        <li>{{ $b->nama_bank }} - {{ $b->no_rekening }}</li>
+                                      @endforeach
+                                      
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="flex justify-between mt-2">
                             <div>
                                 Tinggi
                             </div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->detailtransaksi[0]->tinggi }}
+                            @else
                                 <input type="number" name="tinggi" value="{{ $item->detailtransaksi[0]->tinggi }}" >
+                            @endif
                             </div>
                         </div>
 
@@ -221,7 +249,11 @@
                                 Berat
                             </div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->detailTransaksi[0]->berat }}
+                            @else
                                 <input type="number" name="berat" value="{{ $item->detailtransaksi[0]->berat }}" >
+                            @endif
                             </div>
                         </div>
                         <div class="flex justify-between mt-2">
@@ -230,7 +262,11 @@
                             </div>
                             <div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->detailTransaksi[0]->riwayat_alergi }}
+                            @else
                                 <input type="text" name="riwayat_alergi" value="{{ $item->detailtransaksi[0]->riwayat_alergi }}" >
+                            @endif
                             </div>
                             </div>
                         </div>
@@ -240,7 +276,11 @@
                             </div>
                             <div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->detailTransaksi[0]->alamat }}
+                            @else
                                 <input type="text" name="alamat" value="{{ $item->detailtransaksi[0]->alamat }}" >
+                            @endif
                             </div>
                             </div>
                         </div>
@@ -250,10 +290,34 @@
                             </div>
                             <div>
                             <div>
+                            @if($item->status_pembayaran == 'lunas')
+                                {{ $item->detailTransaksi[0]->detail_lokasi }}
+                            @else
                                 <input type="text" name="detail_lokasi" value="{{ $item->detailtransaksi[0]->detail_lokasi }}" >
+                            @endif
                             </div>
                             </div>
                         </div>
+
+                        @if($item->metode_pembayaran == 'transfer')
+                            <div class="flex justify-between mt-2">
+                                <div>
+                                    Jenis Bank
+                                </div>
+                                <div>
+                            
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3 justify-between mt-2">
+                                <div>
+                                    Upload Bukti Pembayaran
+                                </div>
+                                <div>
+                                    <input type="file" name="bukti">
+                                </div>
+                            </div>
+                        @endif
   
 
                         <div class="border-t-2 mt-2">
@@ -266,15 +330,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        
                     </div>
                     <div class="flex mt-4 gap-2 justify-center">
                         <span class="" x-on:click="printDiv()">
                             <button class="btn btn-info"><i class="fa-solid fa-print mr-2"></i>Print</button>
                         </span>
+                        @if($item->status_pembayaran != 'lunas')
+
 
                         <span>
-                            <button type="submit" class="btn btn-success"><i class="fa-solid fa-pencil mr-2"></i>Edit</button>
+                            <button type="submit" class="btn btn-success"><i class="fa-solid fa-pencil mr-2"></i> @if($item->metode_pembayaran == 'transfer') Edit/Bayar @else Edit @endif</button>
                         </span>
+                        @endif
                     </div>
 
                 </form>

@@ -16,16 +16,28 @@
             <x-select title="Status Pembayaran" wireModel='transaksi_obat.status_pembayaran' :options="$statusPembayaranOptions" placeholder="Status Pembayaran" addAttributes="disabled"/>
             <x-select title="Status Pengambilan" wireModel='transaksi_obat.status_pengambilan' :options="$statusPengambilanOptions" placeholder="Status Pembayaran" addAttributes="disabled"/>
             <div class="form-group mb-12">
-                <label>Bukti Pembayaran</label>
+                <label>Resep Obat</label>
                 <div class="form-group">
-                    @if (count($images) > 0)
-                    <img src="{{ $images[0]->getUrl() }}"
+                
+                    <img src="{{ asset($transaksi_obat->image) }}"
                     style="border: 1px solid #333; max-width:300px; max-height:300px;" />
-                    @else
-                    <input class="form-control" value="Foto tidak tersedia" disabled>
-                    @endif
+        
                 </div>
             </div>
+
+            @if($transaksi_obat->metode_pembayaran != 'cod')
+                <div class="form-group mb-12">
+                    <label>Bukti Pembayaran</label>
+                    <div class="form-group">
+                        @if (count($images) > 0)
+                        <img src="{{ $images[0]->getUrl() }}"
+                        style="border: 1px solid #333; max-width:300px; max-height:300px;" />
+                        @else
+                        <input class="form-control" value="Foto tidak tersedia" disabled>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             <button type="submit" class="btn btn-primary mr-2" >Submit</button>
             <button type="button" class="btn btn-outline-danger" wire:click='backToIndex'>Cancel</button>

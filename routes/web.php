@@ -27,6 +27,7 @@ use App\Http\Livewire\Dokter\ResepNDiagnosa\CreateResepNDiagnosa;
 use App\Http\Livewire\Pasien\Obat\InformasiPasienComponent;
 use App\Http\Livewire\Pasien\Obat\TebusObatKomponen;
 use App\Http\Livewire\Pasien\PemesananObat\TebusObat;
+use App\Models\Bank;
 use App\Models\Chat;
 use App\Models\DetailTransaksiObat;
 use App\Models\TransaksiObat;
@@ -97,9 +98,16 @@ Route::prefix('pasien')->name('pasien.')->group(function () {
             Route::get('/obat/{id}',[TebusObatController::class, 'createData']);
             Route::post('/obat-edit', function(Request $request){
                 $transaksi = TransaksiObat::find($request->id);
-
                 $transaksi->jenis_pengambilan = $request->jenis_pengambilan;
                 $transaksi->metode_pembayaran = $request->metode_pembayaran;
+         
+                if($transaksi->status_proses != 'diproses'){
+                    if($request->file('bukti')){
+                        $transaksi->addMedia($request->file('bukti'))
+                        ->toMediaCollection($transaksi::BUKTI_PEMBAYARAN);
+                        $transaksi->status_pembayaran = "menunggu konfirmasi";
+                    }
+                }
                 $transaksi->save();
 
                 $transaksiDetail = DetailTransaksiObat::where('transaksi_obat_id', $transaksi->id)->first();
@@ -115,9 +123,10 @@ Route::prefix('pasien')->name('pasien.')->group(function () {
         Route::get("riwayat-obat", [PasienObatController::class, "riwayat_tebus_obat_index"])->name("riwayat-obat.index");
         Route::get("riwayat", function(){
             $chat = Chat::with('ChatDetail')->where('pasien_id', Auth::user()->id)->where('status', 'selesai')->get();
-            $riwayat = TransaksiObat::with('detailTransaksi')->where('pasien_id', Auth::user()->id)->where('status_pembayaran', 'lunas')->get();
-            // dd($riwayat);
-            return view('pages.pasien2.riwayat.index', ['konsultasi' => $chat, 'riwayat' => $riwayat]);
+            $riwayat = TransaksiObat::with('detailTransaksi')->where('pasien_id', Auth::user()->id)->where('status_pembayaran', 'lunas')->where('status_pengambilan', 'diterima')->get();
+            // $riwayat = TransaksiObat::with('detailTransaksi')->where('pasien_id', Auth::user()->id)->where('status_pengambilan',"!=", 'diterima')->get();
+            $bank = Bank::get();
+            return view('pages.pasien2.riwayat.index', ['konsultasi' => $chat, 'riwayat' => $riwayat, 'bank' => $bank]);
         });
         Route::get("pelayanan", function(){
             $chat = Chat::with('ChatDetail')->where('pasien_id', Auth::user()->id)->where('status', 'berlangsung')->get();
@@ -129,9 +138,9 @@ Route::prefix('pasien')->name('pasien.')->group(function () {
         });
         Route::get("transaksi", function(){
             $chat = Chat::with('ChatDetail')->where('pasien_id', Auth::user()->id)->where('status', 'berlangsung')->get();
-            $riwayat = TransaksiObat::with('detailTransaksi')->where('pasien_id', Auth::user()->id)->where('status_pembayaran',"!=", 'lunas')->get();
-            // dd($riwayat);
-            return view('pages.pasien2.riwayat.index', ['konsultasi' => $chat, 'riwayat' => $riwayat]);
+            $riwayat = TransaksiObat::with('detailTransaksi')->where('pasien_id', Auth::user()->id)->where('status_pengambilan',"!=", 'diterima')->get();
+            $bank = Bank::get();
+            return view('pages.pasien2.riwayat.index', ['konsultasi' => $chat, 'riwayat' => $riwayat, 'bank' => $bank]);
         });
         Route::post('/chat', [ChatController::class, 'send'])->name('send.chat');
         Route::get("chat", [ChatController::class, 'proccessChat']);

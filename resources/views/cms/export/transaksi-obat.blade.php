@@ -57,9 +57,6 @@
             <th scope="col" class="px-6 py-3">
                 Total Biaya
             </th>
-            <th scope="col" class="px-6 py-3">
-                Detail Pesanan
-            </th>
         </tr>
     </thead>
     <tbody>
@@ -84,14 +81,7 @@
                     {{ $item->status_pengambilan }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ 'Rp. '.number_format($item->total_harga,0,',','.') }}
-                </td>
-                <td class="px-6 py-4">
-                    @foreach ($item->detailTransaksi as $item)
-                        <div>
-                            x{{ $item->jumlah }} {{ $item->obat->nama }} @ {{  'Rp. '.number_format($item->harga_saat_ini,0,',','.')}}
-                        </div>
-                    @endforeach
+                    {{ 'Rp. '.number_format($item->harga_saat_ini,0,',','.') }}
                 </td>
             </tr>
         @endforeach
